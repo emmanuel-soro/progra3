@@ -13,7 +13,8 @@ import java.util.concurrent.TimeUnit;
 public class Torneo {
 
 	private String path;
-	private List<Luchador> luchadores;
+	// private List<Luchador> luchadores;
+	private Luchador[] luchadores;
 	private int[] resultados;
 
 	public Torneo(String path) throws FileNotFoundException {
@@ -21,43 +22,61 @@ public class Torneo {
 		Scanner sc = new Scanner(new File(this.path));
 		int cantidadLuchadores = sc.nextInt();
 
-		List<Luchador> luchadores = new ArrayList<Luchador>(0);
-		for (int i = 0; i < cantidadLuchadores; i++) {
-			luchadores.add(new Luchador(sc.nextDouble(), sc.nextDouble()));
-		}
+		luchadores = new Luchador[cantidadLuchadores];
+		resultados = new int[cantidadLuchadores];
 
-		sc.close();
+		// List<Luchador> luchadores = new ArrayList<Luchador>(0);
 		
+		for (int i = 0; i < luchadores.length; i++) {
+			luchadores[i] = new Luchador(sc.nextDouble(), sc.nextDouble());
+		}
+		sc.close();
+
 	}
 
 	public void resolver() throws IOException {
 
 		long startTime = System.currentTimeMillis();
 
-		
 		String[] pathSalida = this.path.split(".in");
 
 		PrintWriter salida = new PrintWriter(new FileWriter(pathSalida[0] + ".out"));
+
+		// TODO: optimizar recorriendo la mitad de la lista
 		
-		//TODO: optimizar recorriendo la mitad de la lista
-		for (Luchador luchador : luchadores) {
-			Integer totalDominado = 0;
-
-			for (Luchador otroLuchador : luchadores) {
-
-				if (luchador.equals(otroLuchador)) {
-					continue;
-				}
-				
-				if (luchador.domina(otroLuchador)) {
-					totalDominado++;
-				}
-
-				salida.println(totalDominado);
+		for (int i = 0; i < this.luchadores.length; i++) {
+			//Integer totalDominado = 0;
+			
+			if(this.luchadores[i].domina(this.luchadores[this.luchadores.length - i -1])) {
+				resultados[i]+=1;
+			}else if(this.luchadores[this.luchadores.length - i - 1].domina(this.luchadores[i])) {
+				resultados[this.luchadores.length - i -1] += 1;
 			}
-
 		}
+		
+		
+//		for (Luchador luchador : luchadores) {
+//			Integer totalDominado = 0;
+//
+//			for (Luchador otroLuchador : luchadores) {
+//
+//				if (luchador.equals(otroLuchador)) {
+//					continue;
+//				}
+//
+//				if (luchador.domina(otroLuchador)) {
+//					totalDominado++;
+//				}
+//
+//				
+//			}
+//
+//		}
 
+		for (int i = 0; i < resultados.length; i++) {
+			salida.println(resultados[i]);
+		}
+		
 		salida.close();
 
 		long stopTime = System.currentTimeMillis();

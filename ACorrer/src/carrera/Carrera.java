@@ -101,12 +101,12 @@ public class Carrera {
 
 			for (int i = 0; i < categoriasFemeninas.length; i++) {
 				Categoria cat = categoriasFemeninas[i];
-				pw.println((i + 1) + " " + cat.getPodio()[0] + " " + cat.getPodio()[1] + " " + " " + cat.getPodio()[2]);
+				pw.println((i + 1) + " " + cat.getPodio()[0] + " " + cat.getPodio()[1] + " " + cat.getPodio()[2]);
 			}
-			
+
 			for (int i = 0; i < categoriasMasculinas.length; i++) {
 				Categoria cat = categoriasMasculinas[i];
-				pw.println((i + 1) + " " + cat.getPodio()[0] + " " + cat.getPodio()[1] + " " + " " + cat.getPodio()[2]);
+				pw.println((i + 1) + " " + cat.getPodio()[0] + " " + cat.getPodio()[1] + " " + cat.getPodio()[2]);
 			}
 
 		} catch (Exception e) {

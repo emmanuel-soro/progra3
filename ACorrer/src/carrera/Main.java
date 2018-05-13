@@ -1,17 +1,26 @@
 package carrera;
 
-import generadorPrueba.Generador;
-
 public class Main {
 
 	public static void main(String[] args) {
-		
-		Generador.generarCasoAleatorio(1000000, 60, 60, 1000000, "01.in");
-		
-//		Carrera carrera = new Carrera("00.in", "00.out");
-//		
-//		carrera.resolver();
 
+		
+
+		Carrera carrera = new Carrera("01.in", "01.out");
+
+		long startTime = System.nanoTime();
+		carrera.resolver();
+		long estimatedTime = System.nanoTime() - startTime;
+
+		System.out.println("Metodo resolver demoró:" + estimatedTime + " nanosegundos.");
+
+		Carrera carrera2 = new Carrera("01.in", "01-mejorado.out");
+
+		startTime = System.nanoTime();
+		carrera2.resolverMejorado();
+		estimatedTime = System.nanoTime() - startTime;
+
+		System.out.println("Metodo resolver mejorado demoró:" + estimatedTime + " nanosegundos.");
 	}
 
 }

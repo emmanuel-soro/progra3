@@ -114,4 +114,77 @@ public class Carrera {
 		}
 	}
 
+	public void resolverMejorado() {
+
+		for (int i = 0; i < competidores.length; i++) {
+
+			if (competidores[i].getSexo().equals("F")) {
+
+				Categoria categoria = Carrera.busquedaBinaria(categoriasFemeninas, competidores[i]);
+				competidores[i].setCategoria(categoria);
+
+			} else {
+
+				Categoria categoria = Carrera.busquedaBinaria(categoriasMasculinas, competidores[i]);
+				competidores[i].setCategoria(categoria);
+
+			}
+		}
+
+		for (int i = 0; i < this.finalistas.length; i++) {
+			int participante = this.finalistas[i];
+
+			int[] podio = this.competidores[participante - 1].getCategoria().getPodio();
+
+			if (podio[2] != 0) {
+				continue;
+			}
+
+			for (int j = 0; j < podio.length; j++) {
+				if (podio[j] == 0) {
+					podio[j] = participante;
+					break;
+				}
+			}
+		}
+
+		try (FileWriter fw = new FileWriter(new File(this.salida)); PrintWriter pw = new PrintWriter(fw);) {
+
+			for (int i = 0; i < categoriasFemeninas.length; i++) {
+				Categoria cat = categoriasFemeninas[i];
+				pw.println((i + 1) + " " + cat.getPodio()[0] + " " + cat.getPodio()[1] + " " + cat.getPodio()[2]);
+			}
+
+			for (int i = 0; i < categoriasMasculinas.length; i++) {
+				Categoria cat = categoriasMasculinas[i];
+				pw.println((i + 1) + " " + cat.getPodio()[0] + " " + cat.getPodio()[1] + " " + cat.getPodio()[2]);
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	public static Categoria busquedaBinaria(Categoria categorias[], Competidor competidor) {
+		int n = categorias.length;
+		int centro;
+		int inf = 0;
+		int sup = n - 1;
+
+		while (inf <= sup) {
+			centro = (sup + inf) / 2;
+
+			if (competidor.getEdad() >= categorias[centro].getEdadMinina()
+					&& competidor.getEdad() < categorias[centro].getEdadMaxima() + 1) {
+				return categorias[centro];
+			} else if (competidor.getEdad() < categorias[centro].getEdadMinina()) {
+				sup = centro - 1;
+			} else {
+				inf = centro + 1;
+			}
+		}
+
+		return null;
+	}
+
 }

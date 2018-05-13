@@ -22,26 +22,26 @@ public class Generador {
 			// int edadMaxima = 80;
 			int topeEdadCategoria;
 
-			topeEdadCategoria = edadMinima + 1;
+			topeEdadCategoria = edadMinima;
 
 			for (int i = 0; i < categoriasFemeninas; i++) {
 
 				pw.println(edadMinima + " " + topeEdadCategoria);
 				edadMinima = topeEdadCategoria + 1;
-				topeEdadCategoria = edadMinima + 1;
+				topeEdadCategoria = edadMinima ;
 			}
 
 			edadMinima = 10;
-			topeEdadCategoria = edadMinima + 1;
+			topeEdadCategoria = edadMinima;
 
 			for (int i = 0; i < categoriasMasculinas; i++) {
 				pw.println(edadMinima + " " + topeEdadCategoria);
 				edadMinima = topeEdadCategoria + 1;
-				topeEdadCategoria = edadMinima + 1;
+				topeEdadCategoria = edadMinima ;
 			}
 
 			for (int i = 0; i < competidores; i++) {
-				int edad = r.nextInt(80 - 10) + 10;
+				int edad = r.nextInt(69 - 10) + 10;
 				String sexo = r.nextBoolean() ? "F" : "M";
 
 				pw.println(edad + " " + sexo);

@@ -2,6 +2,8 @@ package carrera;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.PrintWriter;
 import java.util.Scanner;
 
 public class Carrera {
@@ -12,10 +14,9 @@ public class Carrera {
 	private Competidor[] competidores;
 	private int[] finalistas;
 
-	private Carrera(String entrada, String salida) {
+	public Carrera(String entrada, String salida) {
 
 		this.salida = salida;
-		int cantCompetidoresFinalistas;
 
 		Scanner fileScanner = null;
 
@@ -49,6 +50,68 @@ public class Carrera {
 			fileScanner.close();
 		}
 
+	}
+
+	public void resolver() {
+
+		for (int i = 0; i < competidores.length; i++) {
+
+			if (competidores[i].getSexo().equals("F")) {
+
+				for (int j = 0; j < this.categoriasFemeninas.length; j++) {
+
+					if (competidores[i].getEdad() >= categoriasFemeninas[j].getEdadMinina()
+							&& competidores[i].getEdad() < categoriasFemeninas[j].getEdadMaxima() + 1) {
+						competidores[i].setCategoria(categoriasFemeninas[j]);
+						break;
+					}
+				}
+
+			} else {
+				for (int j = 0; j < this.categoriasMasculinas.length; j++) {
+
+					if (competidores[i].getEdad() >= categoriasMasculinas[j].getEdadMinina()
+							&& competidores[i].getEdad() < categoriasMasculinas[j].getEdadMaxima() + 1) {
+						competidores[i].setCategoria(categoriasMasculinas[j]);
+						break;
+					}
+				}
+			}
+		}
+
+		for (int i = 0; i < this.finalistas.length; i++) {
+			int participante = this.finalistas[i];
+
+			int[] podio = this.competidores[participante - 1].getCategoria().getPodio();
+
+			if (podio[2] != 0) {
+				continue;
+			}
+
+			for (int j = 0; j < podio.length; j++) {
+
+				if (podio[j] == 0) {
+					podio[j] = participante;
+					break;
+				}
+			}
+		}
+
+		try (FileWriter fw = new FileWriter(new File(this.salida)); PrintWriter pw = new PrintWriter(fw);) {
+
+			for (int i = 0; i < categoriasFemeninas.length; i++) {
+				Categoria cat = categoriasFemeninas[i];
+				pw.println((i + 1) + " " + cat.getPodio()[0] + " " + cat.getPodio()[1] + " " + " " + cat.getPodio()[2]);
+			}
+			
+			for (int i = 0; i < categoriasMasculinas.length; i++) {
+				Categoria cat = categoriasMasculinas[i];
+				pw.println((i + 1) + " " + cat.getPodio()[0] + " " + cat.getPodio()[1] + " " + " " + cat.getPodio()[2]);
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 }

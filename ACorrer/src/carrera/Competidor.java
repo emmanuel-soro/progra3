@@ -3,10 +3,10 @@ package carrera;
 public class Competidor {
 
 	private int edad;
-	private String sexo;
+	private char sexo;
 	private Categoria categoria;
 
-	public Competidor(int edad, String sexo) {
+	public Competidor(int edad, char sexo) {
 
 		this.edad = edad;
 		this.sexo = sexo;
@@ -16,7 +16,7 @@ public class Competidor {
 		return edad;
 	}
 
-	public String getSexo() {
+	public char getSexo() {
 		return sexo;
 	}
 

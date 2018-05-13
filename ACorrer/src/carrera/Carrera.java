@@ -10,16 +10,16 @@ public class Carrera {
 
 	private Categoria[] categoriasFemeninas;
 	private Categoria[] categoriasMasculinas;
-	private String salida;
+	private String archivoSalida;
 	private Competidor[] competidores;
 	private int[] finalistas;
 
-	public Carrera(String entrada, String salida) {
+	public Carrera(String entrada) {
 
-		this.salida = salida;
+		this.archivoSalida = entrada.replaceFirst(".in", ".out");
 
 		Scanner fileScanner = null;
-
+		entrada = "aCorrer/" + entrada;
 		try {
 			fileScanner = new Scanner(new File(entrada));
 
@@ -37,7 +37,7 @@ public class Carrera {
 			}
 
 			for (int i = 0; i < this.competidores.length; i++) {
-				this.competidores[i] = new Competidor(fileScanner.nextInt(), fileScanner.next());
+				this.competidores[i] = new Competidor(fileScanner.nextInt(), fileScanner.next().charAt(0));
 			}
 
 			for (int i = 0; i < this.finalistas.length; i++) {
@@ -54,9 +54,17 @@ public class Carrera {
 
 	public void resolver() {
 
+		asignarCompetidoresCategorias();
+
+		armarPodiosPorCategoria();
+
+		escribirSalida();
+	}
+
+	private void asignarCompetidoresCategorias() {
 		for (int i = 0; i < competidores.length; i++) {
 
-			if (competidores[i].getSexo().equals("F")) {
+			if (competidores[i].getSexo() == 'F') {
 
 				for (int j = 0; j < this.categoriasFemeninas.length; j++) {
 
@@ -78,26 +86,23 @@ public class Carrera {
 				}
 			}
 		}
+	}
 
-		for (int i = 0; i < this.finalistas.length; i++) {
-			int participante = this.finalistas[i];
+	/**
+	 * Siendo n competiores, m categorias masculinas/femeninas
+	 *
+	 * Complejidad O(f(n*(log m)))
+	 */
+	public void resolverMejorado() {
 
-			int[] podio = this.competidores[participante - 1].getCategoria().getPodio();
+		asignarCompetidoresCategoriasBusquedaBinaria();
+		armarPodiosPorCategoria();
 
-			if (podio[2] != 0) {
-				continue;
-			}
+		escribirSalida();
+	}
 
-			for (int j = 0; j < podio.length; j++) {
-
-				if (podio[j] == 0) {
-					podio[j] = participante;
-					break;
-				}
-			}
-		}
-
-		try (FileWriter fw = new FileWriter(new File(this.salida)); PrintWriter pw = new PrintWriter(fw);) {
+	private void escribirSalida() {
+		try (FileWriter fw = new FileWriter(new File("aCorrer/"+this.archivoSalida)); PrintWriter pw = new PrintWriter(fw);) {
 
 			for (int i = 0; i < categoriasFemeninas.length; i++) {
 				Categoria cat = categoriasFemeninas[i];
@@ -114,58 +119,43 @@ public class Carrera {
 		}
 	}
 
-	public void resolverMejorado() {
+	private void armarPodiosPorCategoria() {
+		for (int i = 0; i < this.finalistas.length; i++) {
+			int participante = this.finalistas[i];
 
-		for (int i = 0; i < competidores.length; i++) {
+			int[] podio = this.competidores[participante - 1].getCategoria().getPodio();
 
-			if (competidores[i].getSexo().equals("F")) {
+			if (podio[2] != 0) {
+				continue;
+			}
 
-				Categoria categoria = Carrera.busquedaBinaria(categoriasFemeninas, competidores[i]);
+			for (int j = 0; j < podio.length; j++) {
+				if (podio[j] == 0) {
+					podio[j] = participante;
+					break;
+				}
+			}
+		}
+	}
+
+	private void asignarCompetidoresCategoriasBusquedaBinaria() {
+		for (int i = 0; i < competidores.length; i++) {													//O(f(n))
+
+			if (competidores[i].getSexo() == 'F') {
+
+				Categoria categoria = busquedaBinaria(categoriasFemeninas, competidores[i]);	//O(f(log m))
 				competidores[i].setCategoria(categoria);
 
 			} else {
 
-				Categoria categoria = Carrera.busquedaBinaria(categoriasMasculinas, competidores[i]);
+				Categoria categoria = busquedaBinaria(categoriasMasculinas, competidores[i]);	//O(f(log m))
 				competidores[i].setCategoria(categoria);
 
 			}
 		}
-
-		for (int i = 0; i < this.finalistas.length; i++) {
-			int participante = this.finalistas[i];
-
-			int[] podio = this.competidores[participante - 1].getCategoria().getPodio();
-
-			if (podio[2] != 0) {
-				continue;
-			}
-
-			for (int j = 0; j < podio.length; j++) {
-				if (podio[j] == 0) {
-					podio[j] = participante;
-					break;
-				}
-			}
-		}
-
-		try (FileWriter fw = new FileWriter(new File(this.salida)); PrintWriter pw = new PrintWriter(fw);) {
-
-			for (int i = 0; i < categoriasFemeninas.length; i++) {
-				Categoria cat = categoriasFemeninas[i];
-				pw.println((i + 1) + " " + cat.getPodio()[0] + " " + cat.getPodio()[1] + " " + cat.getPodio()[2]);
-			}
-
-			for (int i = 0; i < categoriasMasculinas.length; i++) {
-				Categoria cat = categoriasMasculinas[i];
-				pw.println((i + 1) + " " + cat.getPodio()[0] + " " + cat.getPodio()[1] + " " + cat.getPodio()[2]);
-			}
-
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
 	}
 
-	public static Categoria busquedaBinaria(Categoria categorias[], Competidor competidor) {
+	private Categoria busquedaBinaria(Categoria categorias[], Competidor competidor) {
 		int n = categorias.length;
 		int centro;
 		int inf = 0;

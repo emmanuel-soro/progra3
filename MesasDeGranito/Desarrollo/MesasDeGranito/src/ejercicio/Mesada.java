@@ -1,3 +1,4 @@
+package ejercicio;
 public class Mesada {
 
 	private int largo;

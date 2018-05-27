@@ -1,3 +1,4 @@
+package ejercicio;
 import java.io.FileNotFoundException;
 
 import javax.print.attribute.ResolutionSyntax;
